@@ -1,0 +1,112 @@
+{%extends 'base.html'%}
+{%block contents%}
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      // Load Charts and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Draw the pie chart for numbers of labels from given dataset.
+      google.charts.setOnLoadCallback(drawNumberoflables);
+      // Draw the pie chart for numbers of labels froThreads given dataset.
+      google.charts.setOnLoadCallback(drawNumberofThreads);
+      //latency vs Elapsed Chart
+      google.charts.setOnLoadCallback(latencyElapsedChart);
+      //Elapsed vs Group Threads
+      google.charts.setOnLoadCallback(elapsedvsgroupThread);
+      //Elapsed vs Commit
+      google.charts.setOnLoadCallback(elapsedvsCommit);
+      //Latency vs Connect
+      google.charts.setOnLoadCallback(latencyvscommit);
+      // Callback that draws the pie chart for lables.
+      function drawNumberoflables() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows(
+        {{lbl|safe}}
+        );
+        var options = {title:'Number of lales of the Given Dataset',width:400,height:300};
+        var chart = new google.visualization.PieChart(document.getElementById('numberoflables'));
+        chart.draw(data, options);
+      }
+      //Callback the number of Threads from given Dataset
+      function drawNumberofThreads() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Latency');
+        data.addRows(
+        {{threadName|safe}}
+        );
+        var options = {title:'Number of Threads of the Given Dataset',width:400,height:300};
+        var chart = new google.visualization.PieChart(document.getElementById('numberofThreads'));
+        chart.draw(data, options);
+      }
+      function latencyElapsedChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Topping');
+        data.addColumn('number', 'ELA Latency');
+        data.addRows(
+        {{data|safe}}
+        );
+        var options = {title:'Number of Elapsed vs Latency Given Dataset',width:400,height:300};
+        var chart = new google.visualization.ColumnChart(document.getElementById('elapsedvslatency'));
+        chart.draw(data, options);
+      }
+      function elapsedvsgroupThread() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Topping');
+        data.addColumn('number', 'GRPELA');
+        data.addRows(
+        {{elpgrpthread|safe}}
+        );
+        var options = {title:'Elapsed vs group Threads',width:400,height:300};
+        var chart = new google.visualization.ScatterChart(document.getElementById('elapsedvsGroupThread'));
+        chart.draw(data, options);
+      }
+       function elapsedvsCommit() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Topping');
+        data.addColumn('number', 'ElapsedCommit');
+        data.addRows(
+        {{elpgrpthread|safe}}
+        );
+        var options = {title:'Elapsed vs Connect',width:400,height:300};
+        var chart = new google.visualization.Histogram(document.getElementById('ElapsedCommit'));
+        chart.draw(data, options);
+      }
+      function latencyvscommit() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Topping');
+        data.addColumn('number', 'ElapsedCommit');
+        data.addRows(
+        {{latencyConnect|safe}}
+        );
+        var options = {title:'Elapsed vs Connect',width:400,height:300};
+        var chart = new google.visualization.ScatterChart(document.getElementById('latencyvsconnect'));
+        chart.draw(data, options);
+      }
+
+    </script>
+  </head>
+  <body>
+    <!--Table and divs that hold the pie charts-->
+    <h2>Graph Generate with Google visualization of uploaded dataset </h2>
+    <table class="columns">
+      <tr>
+        <td><div id="numberoflables" style="border: 1px solid #ccc"></div></td>
+        <td><div id="numberofThreads" style="border: 1px solid #ccc"></div></td>
+        <td><div id="elapsedvslatency" style="border: 1px solid #ccc"></div></td>
+      </tr>
+      <tr>
+        <td><div id="elapsedvsGroupThread" style="border: 1px solid #ccc"></div></td>
+        <td><div id="ElapsedCommit" style="border: 1px solid #ccc"></div></td>
+        <td><div id="latencyvsconnect" style="border: 1px solid #ccc"></div></td>
+      </tr>
+    </table>
+  </body>
+</html>
+
+{%endblock%}

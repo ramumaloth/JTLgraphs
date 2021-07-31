@@ -1,0 +1,174 @@
+{%extends 'base.html'%}
+{%block contents%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard with Flexmonster</title>
+    <script src="https://cdn.flexmonster.com/flexmonster.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.flexmonster.com/demo.css">
+    <style>
+/* Charts Style  */
+
+.fm-charts-color-1 {
+  fill: #ffa600 !important;
+}
+
+.fm-charts-color-2 {
+  fill: #7eae26 !important;
+}
+
+.fm-charts-color-3 {
+  fill: #00a45a !important;
+}
+
+.fm-charts-color-4 {
+  fill: #df3800 !important;
+}
+
+.fm-charts-color-5 {
+  fill: #e95800 !important;
+}
+
+.fm-charts-color-6 {
+  fill: #ffa600 !important;
+}</style>
+</head>
+<body>
+<a href="{%url 'index'%}">Back</a>
+<h3>JTL Data Visualization using Flexmonster</h3>
+<div id="pivot-table-container" data-url="{% url 'pivot_data' %}"></div>
+<div id="pivot-chart-container"></div>
+<script>
+function processData(dataset) {
+    var result = []
+    dataset = JSON.parse(dataset);
+    dataset.forEach(item => result.push(item.fields));
+    return result;
+}
+$.ajax({
+    url: $("#pivot-table-container").attr("data-url"),
+    dataType: 'json',
+    success: function(data) {
+        new Flexmonster({
+            container: "#pivot-table-container",
+            componentFolder: "https://cdn.flexmonster.com/",
+            width: "100%",
+            height: 430,
+            toolbar: true,
+            report: {
+                dataSource: {
+                    type: "json",
+                    data: processData(data),
+                    mapping: {
+                        "label": {
+                            "caption": "Label"
+                        },
+                        "threadName": {
+                            "caption": "Thread Name"
+                        },
+                        "elapsed": {
+                            "caption": "Elapsed Value",
+                            "type": "number"
+                        },
+                        "Latency": {
+                            "caption": "latency Value",
+                            "type": "number"
+                        }
+                    }
+                },
+                "slice": {
+                    "rows": [{
+                        "uniqueName": "label"
+                    }],
+                    "columns": [{
+                            "uniqueName": "threadName"
+                        },
+                        {
+                            "uniqueName": "[Measures]"
+                        }
+                    ],
+                    "measures": [{
+                            "uniqueName": "elapsed",
+                            "aggregation": "sum"
+                        },
+                        {
+                            "uniqueName": "Latency",
+                            "aggregation": "sum"
+                        }
+                    ]
+                }
+            }
+        });
+        new Flexmonster({
+            container: "#pivot-chart-container",
+            componentFolder: "https://cdn.flexmonster.com/",
+            width: "100%",
+            height: 430,
+            //toolbar: true,
+            report: {
+                dataSource: {
+                    type: "json",
+                    data: processData(data),
+                    mapping: {
+                        "label": {
+                            "caption": "Label"
+                        },
+                        "threadName": {
+                            "caption": "Thread Name"
+                        },
+                        "elapsed": {
+                            "caption": "Elapsed Value",
+                            "type": "number"
+                        },
+                        "Latency": {
+                            "caption": "Latency Value",
+                            "type": "number"
+                        },
+                         "grpThreads": {
+                            "caption": "Group Thread",
+                            "type": "number"
+                        },
+                         "allThreads": {
+                            "caption": "All Threads",
+                            "type": "number"
+                        }
+                    }
+                },
+                "slice": {
+                    "rows": [{
+                        "uniqueName": "label"
+                    }],
+                    "columns": [{
+                        "uniqueName": "[Measures]"
+                    }],
+                    "measures": [{
+                        "uniqueName": "Duration",
+                        "formula": "sum(\"elapsed\") - sum(\"Latency\")",
+                        "caption": "Duration"
+                    },
+                    {
+                        "uniqueName": "Threads",
+                        "formula": "sum(\"grpThreads\") + sum(\"allThreads\")",
+                        "caption": "Threads"
+                    }
+                    ]
+                },
+                "options": {
+                    "viewType": "charts",
+                    "chart": {
+                        "type": "pie"
+                    }
+                }
+
+            }
+        });
+    }
+});
+
+
+</script>
+</body>
+</html>
+
+{%endblock%}

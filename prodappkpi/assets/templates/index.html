@@ -1,0 +1,21 @@
+{%extends 'base.html'%}
+{%block contents%}
+<div class="container">
+  <h3>you can select the jtl file</h3>
+  <p></p>
+  <form action="{%url 'JtlUploadAction'%}" method="post" enctype="multipart/form-data" >
+        {%csrf_token%}
+
+    <div class="form-group">
+      <label for="file">Select JTL File:</label>
+      <input type="file" name="file" class="form-control"  id='file' accept=".csv,.jtl, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+        <span class="input-group-btn">
+    </div>
+
+    <button type="submit" class="btn btn-default">Upload</button>
+  </form>
+
+        </form>
+</div>
+
+{%endblock%}
