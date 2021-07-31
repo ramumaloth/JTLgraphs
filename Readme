@@ -1,0 +1,11 @@
+#pip install django==2.2
+#pip install django-pandas
+#pip install pandas
+
+#python manage.py runserver
+
+Global Hosting
+# http://ramum.pythonanywhere.com/index
+
+Github link
+#https://github.com/ramumaloth/JTLgraphs.git
